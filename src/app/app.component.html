@@ -64,3 +64,9 @@
 </form>
 {{form.value | json}}
 {{form.controls.mail.errors | json}}
+<tag-input [ngModel]="['@item']"
+           [onlyFromAutocomplete]="true">
+  <tag-input-dropdown [showDropdownIfEmpty]="true"
+                      [autocompleteItems]="['iTem1', 'item2', 'item3']">
+  </tag-input-dropdown>
+</tag-input>

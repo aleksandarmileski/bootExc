@@ -20,6 +20,8 @@ export class AppComponent implements OnInit {
 
   form: FormGroup;
 
+  items = ['Pizza', 'Pasta', 'Parmesan'];
+
   selectElement(index, domainIndex) {
 
     console.log("Index: " + index + " Domain index: " + domainIndex);
