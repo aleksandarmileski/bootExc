@@ -16,11 +16,14 @@ export class AppComponent implements OnInit {
   @ViewChildren('element') element: any;
 
   elements = ["first", "second", "third"];
+  selectedElements = [];
   domains = ["dom1", "dom2"];
 
   form: FormGroup;
+  tagForm: FormGroup;
 
-  items = ['Pizza', 'Pasta', 'Parmesan'];
+  items = [];
+  validators = [Validators.required, this.validateMail];
 
   selectElement(index, domainIndex) {
 
@@ -111,14 +114,19 @@ export class AppComponent implements OnInit {
     this.form = this.fb.group({
       name: ["", Validators.required],
       lastName: ["", Validators.required],
-      mail: ["", [Validators.required, Validators.email]],
-      phone: ["", [Validators.required, CustomValidators.numberFormat]]
+      mail: ["",],
+      phone: ["", [Validators.required, CustomValidators.numberFormat]],
     });
 
     this.form.valueChanges.subscribe(forma => {
       console.log("|" + forma.name.replace(/\s+/g, "") + "|");
       this.form.controls.name.setValue(forma.name.replace(/\s+/g, ""), {onlySelf: true});
     });
+
+    this.tagForm = this.fb.group({
+      someItems: [this.items, this.validators]
+
+    })
 
   }
 
@@ -141,5 +149,32 @@ export class AppComponent implements OnInit {
   clean() {
     this.form.controls.name.setValue(this.form.controls.name.value.replace(/\s+/g, ""));
     this.cd.detectChanges()
+  }
+
+  onTagAdd(element) {
+    this.selectedElements.push(element);
+    console.log("Tag " + element.value + " has been added");
+    console.log(this.selectedElements)
+  }
+
+  onTagRemove(element) {
+    console.log("Tag " + element.value + " with index " + this.selectedElements.indexOf(element) + " has been removed")
+    this.selectedElements.splice(this.selectedElements.indexOf(element), 1);
+    console.log(this.selectedElements)
+  }
+
+  private validateMail(control: FormControl) {
+    let validEmails = true;
+    let filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    if (control !== null) {
+      control.value.forEach((tag,index) => {
+        if (!(filter.test(tag.value))) {
+          control.value.splice(index,1);
+          validEmails = false;
+        }
+      });
+    }
+    console.log("Validity of mails: " + validEmails);
+    return validEmails ? null : {'invalidMail': true};
   }
 }

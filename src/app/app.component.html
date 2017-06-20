@@ -47,7 +47,8 @@
   <div class="form-group">
     <input [ngClass]="{'error': !checkControlValidity('mail')}" class="p-2 d-block form-control" type="email"
            formControlName="mail"
-           asyncValidator placeholder="Email">
+           asyncValidator
+           placeholder="Email">
     <div [hidden]="checkControlValidity('mail')" class="text-danger">E-Mail Error4e</div>
   </div>
   <div class="form-group">
@@ -63,10 +64,18 @@
   </button>
 </form>
 {{form.value | json}}
-{{form.controls.mail.errors | json}}
-<tag-input [ngModel]="['@item']"
-           [onlyFromAutocomplete]="true">
+{{form.errors | json}}
+<tag-input [ngModel]="[]"
+           [onlyFromAutocomplete]="true"
+           (onAdd)="onTagAdd($event)" (onRemove)="onTagRemove($event)"
+           placeholder="Focus or Hit Space">
   <tag-input-dropdown [showDropdownIfEmpty]="true"
-                      [autocompleteItems]="['iTem1', 'item2', 'item3']">
+                      [autocompleteItems]="elements">
   </tag-input-dropdown>
 </tag-input>
+<p>{{elements}}</p>
+<form [formGroup]="tagForm">
+  <tag-input formControlName="someItems" placeholder="Ne znam kaj sum!!!"></tag-input>
+  <button class="btn btn-danger" type="submit" [disabled]="!tagForm.valid">Save Tags</button>
+</form>
+{{tagForm.controls.someItems.errors | json}}
